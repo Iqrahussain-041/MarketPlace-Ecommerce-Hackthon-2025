@@ -18,12 +18,6 @@ This project is a **fully responsive** e-commerce website UI/UX, designed and de
 - **Frontend:** HTML, CSS, Tailwind CSS, Next.js
 - **Backend:** Node.js
 - **CMS:** Sanity CMS
-- **Deployment:** [Vercel](https://hackthone-two.vercel.app/)
-
-## 🌐 Live Demo
-
-Experience the project live: [Hackathon E-Commerce Website](https://hackthone-two.vercel.app/)
-
 ## 📚 Lessons Learned
 
 - Building responsive layouts quickly with Tailwind CSS.
@@ -32,35 +26,6 @@ Experience the project live: [Hackathon E-Commerce Website](https://hackthone-tw
 - Implementing user authentication and add-to-cart functionality.
 - Enhancing design skills to create user-friendly interfaces.
 - Using headless CMS solutions for scalable and efficient content management.
-
-## 🙌 Acknowledgments
-
-- **Teacher’s Support:** Special thanks to **Sir Okasha Aijaz** and **Sir Ameen Alam** for their invaluable guidance and encouragement.
-- **Hackathon Organizers:** For providing a platform to challenge my skills and learn.
-
-## 🛠️ Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/muhammadsami987123/Hackathon-E-Commer-website.git
-   ```
-2. Navigate to the project directory:
-   ```bash
-   cd hackathon-ecommerce-website
-   ```
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-4. Run the development server:
-   ```bash
-   npm run dev
-   ```
-
-## 🤝 Connect with Me
-
-- **LinkedIn:** [Muhammad Sami Asghar Mughal](https://www.linkedin.com/in/muhammad-sami-3aa6102b8/)
-- **GitHub:** [muhammadsami987123](https://github.com/muhammadsami987123)
 
 
 
