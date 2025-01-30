@@ -67,13 +67,13 @@ const Slider = () => {
             {/* Navigation Buttons */}
             <button
               onClick={prevSlide}
-              className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-100 text-gray-800 p-2 rounded-full shadow hover:bg-gray-200 transition"
+              className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-yellow-500 text-gray-800 p-2 rounded-full shadow hover:bg-yellow-600 transition"
             >
               ❮
             </button>
             <button
               onClick={nextSlide}
-              className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-100 text-gray-800 p-2 rounded-full shadow hover:bg-gray-200 transition"
+              className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-yellow-500 text-gray-800 p-2 rounded-full shadow hover:bg-yellow-600 transition"
             >
               ❯
             </button>

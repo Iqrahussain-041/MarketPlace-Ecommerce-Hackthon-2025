@@ -1,13 +1,15 @@
 "use client";
-
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import FeatureSection from "../FeatureSection";
 import Link from "next/link";
 import Image from "next/image";
 import { sanityClient } from "@/sanity/lib/sanity";
+const categories = ["All", "Sofa", "Table", "Chair", "Lamp"];
+
 
 interface Product {
   id: string;
+  tags: string[];
   name: string;
   description: string;
   price: number;
@@ -29,11 +31,12 @@ const ITEMS_PER_PAGE = 8; // Display 6 products per page
 function ProductSection() {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [priceRange, setPriceRange] = useState<number>(500); // Default price range
-  const [category, setCategory] = useState<string>("all"); // Default category
-  const [showFilters, setShowFilters] = useState<boolean>(false); // Toggle filters visibility
-  const [currentPage, setCurrentPage] = useState<number>(1); // Current page
+ 
 
+ 
+  const [currentPage, setCurrentPage] = useState<number>(1); // Current page
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [sortOrder, setSortOrder] = useState("default");
   useEffect(() => {
     const fetchProducts = async () => {
       const query = `*[_type == "product"] {
@@ -56,6 +59,7 @@ function ProductSection() {
             : "No description available",
           price: product.price,
           image: product.productImage || "/placeholder.jpg",
+          tags: [] // Add an empty array for tags or fetch actual tags if available
         }));
         setProducts(formattedProducts);
         setFilteredProducts(formattedProducts); // Initialize with all products
@@ -66,25 +70,36 @@ function ProductSection() {
 
     fetchProducts();
   }, []);
+  
 
-  const applyFilters = () => {
-    const filtered = products.filter(
-      (product) =>
-        product.price <= priceRange &&
-        (category === "all" ||
-          product.name.toLowerCase().includes(category.toLowerCase()))
-    );
+  const filterAndSortProducts = useCallback(() => {
+    let filtered = [...products];
+
+    if (selectedCategory !== "All") {
+      filtered = filtered.filter((product) =>
+        product.tags.includes(selectedCategory.toLowerCase())
+      );
+    }
+
+    switch (sortOrder) {
+      case "price-low-to-high":
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case "price-high-to-low":
+        filtered.sort((a, b) => b.price - a.price);
+        break;
+      default:
+        break;
+    }
+
     setFilteredProducts(filtered);
-    setCurrentPage(1); // Reset to the first page
-  };
-
+  }, [products, selectedCategory, sortOrder]);
   // Calculate pagination data
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
-  const paginatedProducts = filteredProducts.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
-
+ 
+  useEffect(() => {
+    filterAndSortProducts();
+  }, [filterAndSortProducts]);
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="container mx-auto px-4 py-6">
@@ -94,73 +109,42 @@ function ProductSection() {
         >
           <div className="absolute inset-0 bg-opacity-50"></div>
         </header>
-
-        {/* Filter Toggle Button */}
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-6 py-8">
-          <h2 className="text-3xl font-bold text-center sm:text-left">Our All Products</h2>
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="bg-gray-800 text-white px-4 py-2 mt-4 sm:mt-0 rounded-md hover:bg-gray-700 transition"
-          >
-            {showFilters ? "Hide Filters" : "Show Filters"}
-          </button>
-        </div>
-
-        {/* Filters Section */}
-        {showFilters && (
-          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Price Range Filter */}
-              <div className="flex flex-col">
-                <label htmlFor="priceRange" className="text-gray-600 font-semibold mb-2">
-                  Max Price: <span className="text-gray-800">${priceRange}</span>
-                </label>
-                <input
-                  id="priceRange"
-                  type="range"
-                  min="0"
-                  max="1000"
-                  step="50"
-                  value={priceRange}
-                  onChange={(e) => setPriceRange(Number(e.target.value))}
-                  className="w-full accent-gray-800"
-                />
-              </div>
-
-              {/* Category Filter */}
-              <div className="flex flex-col">
-                <label htmlFor="category" className="text-gray-600 font-semibold mb-2">
-                  Category
-                </label>
+      {/* Filter Bar */}
+      <div className="bg-[#F9F1E7] px-4 md:px-8 py-6">
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-8">
+              <div className="flex items-center gap-2">
+                <span className="font-medium">Category:</span>
                 <select
-                  id="category"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="bg-gray-100 border rounded px-3 py-2"
+                  className="bg-transparent border border-[#9F9F9F] rounded px-4 py-1 focus:border-[#B88E2F]"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
                 >
-                  <option value="all">All</option>
-                  <option value="furniture">Furniture</option>
-                  <option value="electronics">Electronics</option>
-                  <option value="clothing">Clothing</option>
+                  {categories.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
                 </select>
               </div>
-
-              {/* Apply Filter Button */}
-              <div className="flex items-center sm:col-span-2 lg:col-span-1">
-                <button
-                  onClick={applyFilters}
-                  className="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition w-full"
-                >
-                  Apply Filters
-                </button>
-              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <span className="text-[#9F9F9F]">Sort by</span>
+              <select
+                className="bg-transparent border border-[#9F9F9F] rounded px-4 py-1 focus:border-[#B88E2F]"
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+              >
+                <option value="default">Default</option>
+                <option value="price-low-to-high">Price: Low to High</option>
+                <option value="price-high-to-low">Price: High to Low</option>
+              </select>
             </div>
           </div>
-        )}
-
+        </div>
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {paginatedProducts.map((product) => (
+          {filteredProducts.map((product) => (
             <Link key={product.id} href={`/product/${product.slug}`}>
               <div className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all cursor-pointer">
                 <Image
@@ -183,7 +167,7 @@ function ProductSection() {
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
-            className="px-4 py-2 bg-gray-800 text-white rounded-md mr-2 disabled:opacity-50"
+            className="px-4 py-2 bg-yellow-500 text-white rounded-md mr-2 disabled:opacity-50 hover:bg-yellow-600"
           >
             Previous
           </button>
@@ -191,7 +175,7 @@ function ProductSection() {
           <button
             onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-gray-800 text-white rounded-md ml-2 disabled:opacity-50"
+            className="px-4 py-2 bg-yellow-500 text-white rounded-md ml-2 disabled:opacity-50 hover:bg-yellow-600"
           >
             Next
           </button>

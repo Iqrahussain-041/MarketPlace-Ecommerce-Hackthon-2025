@@ -4,6 +4,7 @@ import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { sanityClient } from "@/sanity/lib/sanity";
+import { useRouter } from 'next/navigation';
 
 interface Product {
   _id: string;
@@ -15,9 +16,9 @@ interface Product {
 }
 
 export default function ProductSection() {
-  const [visibleProductsCount, setVisibleProductsCount] = useState(4); // Initially show 4 products
+  const [visibleProductsCount] = useState(4); // Initially show 4 products
   const [products, setProducts] = useState<Product[]>([]); // State for products
-
+  const router = useRouter();
   // Fetch products from Sanity
   useEffect(() => {
     const fetchProducts = async () => {
@@ -41,13 +42,17 @@ export default function ProductSection() {
     fetchProducts();
   }, []);
 
-  const handleShowMore = () => {
-    setVisibleProductsCount((prevCount) => Math.min(prevCount + 4, products.length)); // Ensure it doesn't exceed total products
+  const handleAllProducts = () => {
+    try {
+      router.push("/shop"); // Correct usage of router.push
+    } catch (error) {
+      console.error("Failed to redirect to /all-products:", error);
+    }
   };
 
   return (
-    <section className="p-4 px-10 rounded-lg">
-      <h2 className="py-4 text-3xl font-bold text-center mb-8">Our Products</h2>
+    <section className=" bg-gray-200 p-4 px-10 rounded-lg">
+      {/* <h2 className="py-4 text-3xl font-bold text-center mb-8">Our Products</h2> */}
 
       {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mx-auto">
@@ -68,7 +73,7 @@ export default function ProductSection() {
               <p className="text-gray-600 mb-2">{product.description
                 ? product.description.split(" ").slice(0, 20).join(" ") + "..."
                 : "No description available"}</p>
-              <p className="text-lg font-bold mb-4">Rp {product.price}</p>
+              <p className="text-lg font-bold mb-4">$ {product.price}</p>
             </div>
           </Link>
         ))}
@@ -78,8 +83,8 @@ export default function ProductSection() {
       {visibleProductsCount < products.length && (
         <div className="flex justify-center mt-10">
           <button
-            className="text-white px-6 py-3 rounded-md text-lg font-bold bg-yellow-600 hover:bg-yellow-800 transition-colors"
-            onClick={handleShowMore}
+            className="text-white px-6 py-3 rounded-md text-lg font-bold bg-yellow-500 hover:bg-yellow-600 transition-colors"
+            onClick={handleAllProducts}
             aria-label="Show more products"
           >
             Show More

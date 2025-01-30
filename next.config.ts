@@ -1,10 +1,5 @@
-// next.config.js
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
+module.exports = {
   images: {
-    domains: ['cdn.sanity.io'], // Add the domain here
+    domains: ['cdn.sanity.io'],
   },
 };
-
-module.exports = nextConfig;
