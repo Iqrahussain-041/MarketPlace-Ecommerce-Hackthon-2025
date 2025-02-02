@@ -46,9 +46,9 @@ const Footer = () => {
           <div>
             <h2 className="font-semibold text-lg text-gray-900">Support</h2>
             <ul className="mt-4 space-y-3">
-              <li><a href="#" className="hover:text-yellow-600">Payment Options</a></li>
-              <li><a href="#" className="hover:text-yellow-600">Returns</a></li>
-              <li><a href="#" className="hover:text-yellow-600">Privacy Policy</a></li>
+              <li><a href="/PaymentTerms" className="hover:text-yellow-600">Payment Options</a></li>
+              <li><a href="/return" className="hover:text-yellow-600">Returns</a></li>
+              <li><a href="/PrivacyPolicy" className="hover:text-yellow-600">Privacy Policy</a></li>
             </ul>
           </div>
 

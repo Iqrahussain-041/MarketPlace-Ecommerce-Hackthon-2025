@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { client } from "@/sanity/lib/client";
 import { useShoppingCart } from "use-shopping-cart";
 
+
 // Define the type for a product
 interface Product {
   _id: string;
@@ -82,8 +83,8 @@ const Navbar = () => {
       router.push("/login"); // Correct usage of router.push
     } catch (error) {
       console.error("Failed to redirect to /all-products:", error);
-    }
-  };
+    }
+  };
 
   return (
     <div>
